@@ -17,8 +17,7 @@ class MultiGame(GameScreen):
         
         self.floor_image = asserts.get_images("floor")
         self.floor_x = 0
-        
-        
+         
         self.score = Score()
         
         self.birds = self.build_birds_from_player_list(game.get_context("player_list", True))
@@ -45,11 +44,14 @@ class MultiGame(GameScreen):
 
     def render_birds(self):
         for pid, bird in self.birds.items():
-            font = pygame.font.SysFont("Arial", 14)
-            id_text = font.render(pid, True, (255, 255, 255))
-            self.blit(id_text, bird.dynamic_id())
-            bird.move()
-            bird.draw(self.window)
+            if not bird.dead:
+                font = pygame.font.SysFont("Arial", 14)
+                id_text = font.render(pid, True, (255, 255, 255))
+                self.blit(id_text, bird.dynamic_id())
+                bird.move()
+                bird.draw(self.window)
+                if bird.check_collision(self.pipes.pipes):
+                    bird.dead = True
 
         
     def _render(self, events, **args):
@@ -63,27 +65,6 @@ class MultiGame(GameScreen):
             self.update_floor()
 
             self.render_birds()
-
-              
-            
-            # for bird in self.birds: 
-            #     bird["birds"].move()
-            #     self.game.channel.send(data=Event(id=JUMP, data=None).to_dict())
-            #     bird["birds"].draw(self.window)
-            #     font = pygame.font.SysFont("Arial", 14)
-            #     id_text = font.render(bird["pid"], True, (255, 255, 255))
-            #     self.blit(id_text, bird["birds"].dynamic_id())
-            # self.bird.draw_id(self.window)
-            # self.dead = self.bird.check_collision(self.pipes.pipes)
-            
-            
-            # if bird["birds"].bird_score(self.pipes.pipes):       
-            #     self.score.update(1)
-                    # self.current_score += 1
-                
-                # self.score.save_highscore(self.current_score)
-            # self.score.render_score(self.window)
-
             
         else:
             self.blit(asserts.get_images("day"), (0, 0))
