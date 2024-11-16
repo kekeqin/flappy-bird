@@ -91,6 +91,8 @@ class Bird:
                 return True
         return False
     
+    def bird_dead(self):
+        self.dead = True
         
     def dynamic_id(self):
         return (self.rect.x, self.rect.y - 10)

@@ -4,7 +4,7 @@ import pygame
 from channel import Channel
 from asserts import Asserts
 from bird import Bird
-from event import Event, PLAYER_LIST, QUIT, PIPE_DATA, JUMP
+from event import Event, PLAYER_LIST, QUIT, PIPE_DATA, JUMP, DEAD
 from score import Score
 
 
@@ -14,6 +14,7 @@ class MultiGame(GameScreen):
         super().__init__(game, asserts)
         self.window = self.game.window
         self.dead = False
+        self.all_dead = False
         
         self.floor_image = asserts.get_images("floor")
         self.floor_x = 0
@@ -32,6 +33,15 @@ class MultiGame(GameScreen):
             pid = event.data["pid"]
             bird = self.birds[pid]
             bird.jump()
+        elif event.is_event(DEAD):
+            self.handle_dead_event(event)
+            
+    def handle_dead_event(self,event):
+        pid = event.data["pid"]
+        current_pid = self.game.get_context("multiplayer_mode_pid", True)
+        if pid == current_pid:
+            bird = self.birds[pid]
+            bird.bird_dead()
 
 
     def build_birds_from_player_list(self, player_list):
@@ -41,6 +51,13 @@ class MultiGame(GameScreen):
             birds[pid] = Bird(x=60, y=200, p_id=player["pid"])
 
         return birds
+    
+    def check_all_birds_dead(self):
+        for bird in self.birds.values():
+            if not bird.dead:
+                return False
+        self.all_dead = True
+        return True
 
     def render_birds(self):
         for pid, bird in self.birds.items():
@@ -52,12 +69,26 @@ class MultiGame(GameScreen):
                 bird.draw(self.window)
                 if bird.check_collision(self.pipes.pipes):
                     bird.dead = True
+                    dead_event = Event(id=DEAD, data={"pid": self.pid})
+                    self.game.channel.send(data=dead_event.to_dict())
+                    if bird.id == self.pid:
+                        self.all_dead = self.check_all_birds_dead()
+                        
+                if bird.bird_score(self.pipes.pipes):
+                    self.score.update(1)
+                self.score.render_score(self.window)
+            else:
+                if bird.id == self.pid:
+                    self.score.render_score(self.window)
+                    font = pygame.font.SysFont("Arial", 28)
+                    dead_text = font.render("YOU DEAD!", True, (250, 250, 250))
+                    self.blit(dead_text, (65, 150))
 
         
     def _render(self, events, **args):
         self.handle_events(events)
 
-        if not self.dead:
+        if not self.all_dead:
             self.blit(asserts.get_images("day"), (0, 0))
             self.blit(asserts.get_images("floor"), (0, 400))
             self.pipes.update_pipes()
@@ -65,19 +96,21 @@ class MultiGame(GameScreen):
             self.update_floor()
 
             self.render_birds()
+            self.check_all_birds_dead()
             
         else:
-            self.blit(asserts.get_images("day"), (0, 0))
-            self.blit(asserts.get_images("floor"), (0, 400))
-            self.pipes.update_pipes()
-            self.pipes.draw_and_update(self.window)
-            self.update_floor()
-            # self.bird.draw(self.window)
-            self.score.render_score(self.window)
-            font = pygame.font.SysFont("Arial", 28)
-            dead_text = font.render("YOU DEAD!", True, (250, 250, 250))
+            self.render_game_over()
             
-            self.blit(dead_text, (65, 150))
+    def render_game_over(self):
+        self.blit(asserts.get_images("day"), (0, 0))
+        self.blit(asserts.get_images("floor"), (0, 400))
+        self.pipes.update_pipes()
+        self.pipes.draw_and_update(self.window)
+        self.update_floor()
+        self.score.render_score(self.window)
+        font = pygame.font.SysFont("Arial", 28)
+        dead_text = font.render("ALL DEAD!", True, (250, 250, 250)) 
+        self.blit(dead_text, (65, 150))
     
     def handle_events(self, events):
         for event in events:

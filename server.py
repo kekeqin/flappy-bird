@@ -1,7 +1,7 @@
 import socket
 from player import Player
 from channel import send_message, ServerChannel
-from event import Event, PLAYER_LIST, QUIT,  READY, PIPE_DATA, START, SCORE, JUMP, PID
+from event import Event, PLAYER_LIST, QUIT,  READY, PIPE_DATA, START, SCORE, JUMP, PID, DEAD
 import random
 
 
@@ -57,6 +57,18 @@ class Server:
             self.handle_ready_event()
         elif event.is_event(JUMP):
             self.broadcast(data=event.to_dict())
+        elif event.is_event(DEAD):
+            self.handle_dead_event(channel, event)
+            
+    def handle_dead_event(self, channel, event):
+        pid = event.data["pid"]
+        for conn in self.conns:
+            if conn == channel.conn:
+                player_index = self.conns.index(conn)
+                player_pid = self.players[player_index].get_pid()
+                if pid == player_pid:
+                    self.broadcast(data=event.to_dict())
+                    break
 
             
     def handle_start_event(self):
