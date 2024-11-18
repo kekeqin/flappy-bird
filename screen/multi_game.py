@@ -4,7 +4,7 @@ import pygame
 from channel import Channel
 from asserts import Asserts
 from bird import Bird
-from event import Event, PLAYER_LIST, QUIT, PIPE_DATA, JUMP, DEAD
+from event import Event, PLAYER_LIST, QUIT, PIPE_DATA, JUMP, DEAD, SCORE
 from score import Score
 
 
@@ -134,7 +134,7 @@ class MultiGame(GameScreen):
     
     def handle_events(self, events):
         for event in events:
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE and not self.all_dead:
                 event_data = {"pid": self.pid}
                 self.game.channel.send(data=Event(id=JUMP, data=event_data).to_dict())
                 
