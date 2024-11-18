@@ -58,19 +58,10 @@ class Server:
         elif event.is_event(JUMP):
             self.broadcast(data=event.to_dict())
         elif event.is_event(DEAD):
-            self.handle_dead_event(channel, event)
-            
-    def handle_dead_event(self, channel, event):
-        pid = event.data["pid"]
-        for conn in self.conns:
-            if conn == channel.conn:
-                player_index = self.conns.index(conn)
-                player_pid = self.players[player_index].get_pid()
-                if pid == player_pid:
-                    self.broadcast(data=event.to_dict())
-                    break
-
-            
+            self.broadcast(data=event.to_dict())
+        elif event.is_event(SCORE):
+            self.broadcast(data=event.to_dict())
+                    
     def handle_start_event(self):
         game_start_event = Event(id=START, data=None)
         self.broadcast(data=game_start_event.to_dict())

@@ -13,6 +13,9 @@ from asserts import Asserts
 
 class GameScreen:
     def __init__(self):
+        self.reset_game()
+        
+    def reset_game(self):
         self.running = True
         self.screen = None
         # 上下文

@@ -26,7 +26,7 @@ class Bird:
         
         self.dead =False
         
-        self.score = Score()
+        self.score = 0
 
         self.is_jump = False
 
@@ -88,6 +88,7 @@ class Bird:
         for pipe in pipes:
             if  self.rect.left + pipe.x_vel < pipe.rect.centerx < self.rect.left:
                 asserts.get_audios("score").play()
+                self.score += 1
                 return True
         return False
     
