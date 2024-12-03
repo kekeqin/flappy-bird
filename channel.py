@@ -10,7 +10,7 @@ def receive_message(sock):
         return
     
     if len(length_bytes) < 4:
-        raise ValueError(f"Length prefix not receive correctly {len(lengh_bytes)}")
+        raise ValueError(f"Length prefix not receive correctly {len(length_bytes)}")
     
     message_length = int.from_bytes(length_bytes, 'big')
     
@@ -29,15 +29,16 @@ def receive_message(sock):
         return None
 
 
+send_message_lock = threading.Lock()
 def send_message(sock, message):
-    json_message = json.dumps(message)
-    
-    packed_message = json_message.encode('utf-8')
-    message_length = len(packed_message)
-    
-    sock.sendall(message_length.to_bytes(4, 'big'))
-    sock.sendall(packed_message)
-    
+    with send_message_lock:
+        json_message = json.dumps(message)
+        
+        packed_message = json_message.encode('utf-8')
+        message_length = len(packed_message)
+        
+        sock.sendall(message_length.to_bytes(4, 'big'))
+        sock.sendall(packed_message)
     
     
 class ServerChannel():

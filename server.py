@@ -60,25 +60,6 @@ class Server:
     # 处理客户端事件
     # TODO 使用 match
     def client_event_handler(self, channel, event):
-        # match event.id:
-        #     case "QUIT":
-        #         self.handle_quit_event(channel)
-        #     case "START":
-        #         self.handle_start_event()
-        #     case"READY":
-        #         self.handle_ready_event()
-        #     case "JUMP":
-        #         pid = event.data["pid"]
-        #         for bird in self.birds:
-        #             if bird.id == pid:
-        #                 bird.jump()
-        #     case "DEAD":
-        #         pid = event.data["pid"]
-        #         for bird in self.birds:
-        #             if bird.id == pid:
-        #                 bird.dead = True
-        #                 dead_event = Event(id=DEAD, data={"pid": bird.id})
-        #                 self.broadcast(data=dead_event.to_dict())
         if event.is_event(QUIT):
             self.handle_quit_event(channel)
         elif event.is_event(START):

@@ -4,11 +4,7 @@ import pygame
 from channel import Channel
 from asserts import Asserts
 from bird import Bird
-<<<<<<< HEAD
 from event import Event, PLAYER_LIST, QUIT, PIPE_DATA, JUMP, DEAD, SCORE,BIRD_STATE_UPDATE
-=======
-from event import Event, PLAYER_LIST, QUIT, PIPE_DATA, JUMP, DEAD, SCORE
->>>>>>> 3cb3832f1a6d532ce775d3dd01095f02ff5cee1e
 from score import Score
 
 

@@ -46,6 +46,7 @@ class Game:
             self.channel.recv()
         
     def handle_channel_events(self, event):
+        # print("recive event: ", event.id)
         if event.is_event(PID):
             pid = event.data["pid"]
             print("recive pid: ", pid)
