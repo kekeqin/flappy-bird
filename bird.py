@@ -1,7 +1,6 @@
 import pygame
 import math
 from asserts import Asserts
-from score import Score
 
 H = 512
 asserts = Asserts()
@@ -17,14 +16,15 @@ class Bird:
         self.rect.x = x
         self.rect.y = y
         
-        self.y_vel = -6
-        self.gravity = 0.5
+        self.y_vel = -4
+        self.gravity = 0.15
         self.velocity = 0
-        self.animation_speed = 0.08
-        self.y_amplitude = 1.5
-        self.y_frequency = 0.01
         
-        self.dead =False
+        self.animation_speed = 0.05
+        self.y_amplitude = 1.2
+        self.y_frequency = 0.007
+        
+        self.dead = False
         
         self.score = 0
 
@@ -32,7 +32,7 @@ class Bird:
 
     def jump(self):
         self.is_jump = True
-        
+
     def move(self):
         if not self.dead:
             if self.is_jump and self.velocity >= 0:
@@ -42,9 +42,13 @@ class Bird:
             self.velocity += self.gravity
             self.rect.y += self.velocity
             
-            self.update_indx_state() 
+            self.update_indx_state()
 
-            
+    def move_by_state(self, state):
+        self.velocity = state["velocity"]
+        self.rect.y = state["y"]
+        self.update_indx_state()
+
     def update_indx_state(self):
         if self.velocity > 0:
             self.current_indx = 0
@@ -73,8 +77,8 @@ class Bird:
             rotate_angle = -self.velocity * 4
             rotate_image = pygame.transform.rotate(self.image, rotate_angle)
             window.blit(rotate_image, self.rect)
-        else:
-            window.blit(self.image, self.rect)
+        # else:
+        #     window.blit(self.image, self.rect)
             
     def check_collision(self, pipes):
         if pygame.sprite.spritecollideany(self, pipes) or self.rect.top < 0 or self.rect.bottom > 400 :
@@ -82,7 +86,7 @@ class Bird:
             asserts.get_audios("hit").play()
             asserts.get_audios("die").play()
             return True
-        return False          
+        return False
             
     def bird_score(self, pipes):
         for pipe in pipes:
@@ -92,9 +96,9 @@ class Bird:
                 return True
         return False
     
-    def bird_dead(self):
+    def died(self):
         self.dead = True
-        
+
     def dynamic_id(self):
         return (self.rect.x, self.rect.y - 10)
         

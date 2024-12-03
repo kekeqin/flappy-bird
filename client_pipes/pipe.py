@@ -20,7 +20,7 @@ class Pipe(pygame.sprite.Sprite):
             self.rect.x = x
             self.rect.bottom = y
             
-        self.x_vel = -1.5
+        self.x_vel = -1.01
         
     def update(self):
         self.rect.x += self.x_vel

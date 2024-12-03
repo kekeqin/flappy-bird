@@ -10,7 +10,7 @@ PLAYER_LIST = 7
 PIPE_DATA = 8
 
 PID = 9
-
+BIRD_STATE_UPDATE = 10
 
 class Event:
     def __init__(self, id, data):

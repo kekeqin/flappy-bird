@@ -10,7 +10,6 @@ asserts = Asserts()
 class MultiScreen(GameScreen):
     def __init__(self, game):
         super().__init__(game, asserts)
-        
         self.bird = Bird(x = 120, y = 130, p_id = None)
         self.window = self.game.window
         
@@ -20,7 +19,6 @@ class MultiScreen(GameScreen):
         self.all_player_ready = False
         
         asserts.get_audios("bgsound").play(-1)
-        
         
     def handle_channel_event(self, event):
         if event.is_event(PLAYER_LIST):

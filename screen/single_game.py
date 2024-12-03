@@ -12,7 +12,7 @@ class SingleGame(GameScreen):
     def __init__(self, game):
         super().__init__(game)
         
-        self.bird = Bird(x = 60, y = 250, p_id = None)
+        self.bird = Bird(x = 60, y = 150, p_id = None)
         
         self.window = self.game.window
         
@@ -59,7 +59,7 @@ class SingleGame(GameScreen):
         return self.current_score
         
     def update_floor(self):
-        self.floor_x -= 2
+        self.floor_x -= 1
         if self.floor_x <= - (self.floor_image.get_width() - 288):
             self.floor_x = 0
         self.window.blit(self.floor_image, (self.floor_x, 400))

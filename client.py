@@ -1,7 +1,7 @@
 import pygame
 import sys
 from channel import Channel
-from event import Event, PLAYER_LIST, QUIT, PIPE_DATA, START, READY, PID
+from event import Event, PLAYER_LIST, QUIT, PIPE_DATA, START, READY, PID, SCORE, BIRD_STATE_UPDATE
 from screen.home_screen import HomeScreen
 from screen.single_screen import SingleScreen
 from screen.single_game import SingleGame
@@ -11,7 +11,7 @@ from screen.game_over import GameOverScreen
 
 from asserts import Asserts
 
-class GameScreen:
+class Game:
     def __init__(self):
         self.reset_game()
         
@@ -38,7 +38,7 @@ class GameScreen:
 
         while self.running:
             self.screen.run()
-            
+               
     def connect_channel(self):
         if self.channel == None:
             print("connting to server...")
@@ -52,6 +52,7 @@ class GameScreen:
             self.update_context("multiplayer_mode_pid", pid)
         else:
             self.screen.handle_channel_event(event)
+
                       
     def screen_update(self, name, final_score = None):
         current_screen = self.screen
@@ -102,5 +103,5 @@ class GameScreen:
         sys.exit()
 
 if __name__ == "__main__":
-    game = GameScreen()
+    game = Game()
     game.start()

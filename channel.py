@@ -18,10 +18,15 @@ def receive_message(sock):
     while len(message_data) < message_length:
         packet = sock.recv(message_length - len(message_data))
         if not packet:
-            raise ValueEarror("Socket connection broken")
+            raise ValueError("Socket connection broken")
         message_data += packet
         
-    return message_data.decode('utf-8')
+    # return message_data.decode('utf-8')
+    try:
+        return message_data.decode('utf-8')
+    except UnicodeDecodeError:
+        print("Error decoding message:", message_data)
+        return None
 
 
 def send_message(sock, message):
